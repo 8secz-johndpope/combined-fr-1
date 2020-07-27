@@ -109,13 +109,14 @@ for (i, imagePath) in enumerate(imagePaths):
     # maintaining the aspect ratio), and then grab the image
     # dimensions
     image = cv2.imread(imagePath)
-    image = imutils.resize(image, width=600)
+    # image = imutils.resize(image, width=600)
     (h, w) = image.shape[:2]
 
     # construct a blob from the image
-    imageBlob = cv2.dnn.blobFromImage(
-        cv2.resize(image, (300, 300)), 1.0, (300, 300),
-        (104.0, 177.0, 123.0), swapRB=False, crop=False)
+    # imageBlob = cv2.dnn.blobFromImage(
+    #     cv2.resize(image, (300, 300)), 1.0, (300, 300),
+    #     (104.0, 177.0, 123.0), swapRB=False, crop=False)
+    imageBlob = cv2.dnn.blobFromImage(image, mean=(104.0, 177.0, 123.0))
 
     # apply OpenCV's deep learning-based face detector to localize
     # faces in the input image
@@ -153,6 +154,7 @@ for (i, imagePath) in enumerate(imagePaths):
             # 	(96, 96), (0, 0, 0), swapRB=True, crop=False)
             # embedder.setInput(faceBlob)
             # vec = embedder.forward()
+            face = cv2.cvtColor(face, cv2.COLOR_BGR2RGB)
             vec = predict(face).cpu()
 
             # add the name of the person + corresponding face

@@ -1,7 +1,7 @@
 import logging
 import os
 import sys
-sys.path.append('/root/fr/')
+sys.path.append('/root/')
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -49,22 +49,22 @@ import argparse
 # construct the argument parser and parse the arguments
 ap = argparse.ArgumentParser()
 ap.add_argument("-u", "--url", default="https://www.youtube.com/watch?v=8uHmXEKltHo")#, required=True, help="Youtube url")
-ap.add_argument("-d", "--detector", default="fr/face_detection_model",#, required=True,
+ap.add_argument("-d", "--detector", default="face_detection_model",#, required=True,
         help="path to OpenCV's deep learning face detector")
 ap.add_argument("-m", "--embedding-model", default="openface_nn4.small2.v1.t7",#, required=True,
         help="path to OpenCV's deep learning face embedding model")
-ap.add_argument("-r", "--recognizer", default="fr/output/recognizer.pickle",#, required=True,
+ap.add_argument("-r", "--recognizer", default="output/recognizer.pickle",#, required=True,
         help="path to model trained to recognize faces")
-ap.add_argument("-l", "--le", default="fr/output/le.pickle",#, required=True,
+ap.add_argument("-l", "--le", default="output/le.pickle",#, required=True,
         help="path to label encoder")
 ap.add_argument("-c", "--confidence", type=float, default=0.5,
         help="minimum probability to filter weak detections")
 
 
 # construct the argument parser and parse the arguments
-ap.add_argument("-e", "--encodings", default="fr/embeddings.pickle",
+ap.add_argument("-e", "--encodings", default="embeddings.pickle",
     help="path to serialized db of facial encodings")
-ap.add_argument("-o", "--output", type=str, default="fr/output/jurassic_park_trailer_output.avi",
+ap.add_argument("-o", "--output", type=str, default="output/jurassic_park_trailer_output.avi",
     help="path to output video")
 ap.add_argument("-y", "--display", type=int, default=0,
     help="whether or not to display output frame to screen")
@@ -74,7 +74,7 @@ ap.add_argument("-dm", "--detection-method", type=str, default="cnn",
 ap.add_argument("-dt", "--dt", type=str, default="dlib",
         help="Type of detector")
 ap.add_argument(
-    "--sphere_model", "-sm", default="fr/sphereface/model/sphere20a_20171020.pth", type=str
+    "--sphere_model", "-sm", default="sphereface/model/sphere20a_20171020.pth", type=str
 )
 
 args = vars(ap.parse_args())
@@ -194,7 +194,7 @@ if args["dt"]=="opencv":
             # resize the frame to have a width of 600 pixels (while
             # maintaining the aspect ratio), and then grab the image
             # dimensions
-            frame = imutils.resize(frame, width=600)
+            # frame = imutils.resize(frame, width=600)
             (h, w) = frame.shape[:2]
 
             if first_run:
@@ -202,9 +202,10 @@ if args["dt"]=="opencv":
                     first_run = False
 
             # construct a blob from the image
-            imageBlob = cv2.dnn.blobFromImage(
-                    cv2.resize(frame, (112, 96)), 1.0, (300, 300),
-                    (104.0, 177.0, 123.0), swapRB=False, crop=False)
+            # imageBlob = cv2.dnn.blobFromImage(
+            #         cv2.resize(frame, (112, 96)), 1.0, (300, 300),
+            #         (104.0, 177.0, 123.0), swapRB=False, crop=False)
+            imageBlob = cv2.dnn.blobFromImage(frame, mean=(104.0, 177.0, 123.0))
 
             # apply OpenCV's deep learning-based face detector to localize
             # faces in the input image
@@ -239,6 +240,7 @@ if args["dt"]=="opencv":
                             #         (96, 96), (0, 0, 0), swapRB=True, crop=False)
                             # embedder.setInput(faceBlob)
                             # vec = embedder.forward()
+                            face = cv2.cvtColor(face, cv2.COLOR_BGR2RGB)
                             idx, proba = predict(face, data["embeddings"])
                             name = data["names"][idx]
 
@@ -300,13 +302,13 @@ elif args["dt"]=="dlib":
     while True:
         # grab the frame from the threaded video stream
         ret, frame = vs.read()
-        if not frame:
+        if type(frame)==type(None):
             break
 
         # convert the input frame from BGR to RGB then resize it to have
         # a width of 750px (to speedup processing)
         rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        rgb = imutils.resize(frame, width=750)
+        # rgb = imutils.resize(frame, width=750)
         r = frame.shape[1] / float(rgb.shape[1])
 
         # detect the (x, y)-coordinates of the bounding boxes
