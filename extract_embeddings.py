@@ -113,10 +113,10 @@ for (i, imagePath) in enumerate(imagePaths):
     (h, w) = image.shape[:2]
 
     # construct a blob from the image
-    # imageBlob = cv2.dnn.blobFromImage(
-    #     cv2.resize(image, (300, 300)), 1.0, (300, 300),
-    #     (104.0, 177.0, 123.0), swapRB=False, crop=False)
-    imageBlob = cv2.dnn.blobFromImage(image, mean=(104.0, 177.0, 123.0))
+    imageBlob = cv2.dnn.blobFromImage(
+        cv2.resize(image, (300, 300)), 1.0, (300, 300),
+        (104.0, 177.0, 123.0), swapRB=False, crop=False)
+    # imageBlob = cv2.dnn.blobFromImage(image, mean=(104.0, 177.0, 123.0))
 
     # apply OpenCV's deep learning-based face detector to localize
     # faces in the input image
