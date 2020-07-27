@@ -38,7 +38,7 @@ import os
 
 # construct the argument parser and parse the arguments
 ap = argparse.ArgumentParser()
-ap.add_argument("-i", "--dataset", default="dataset",
+ap.add_argument("-i", "--dataset", default="tmp",
     help="path to input directory of faces + images")
 ap.add_argument("-e", "--embeddings", default="embeddings.pickle",
     help="path to output serialized db of facial embeddings")

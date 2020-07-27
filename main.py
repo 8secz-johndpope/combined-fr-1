@@ -48,7 +48,7 @@ import argparse
 
 # construct the argument parser and parse the arguments
 ap = argparse.ArgumentParser()
-ap.add_argument("-u", "--url", default="https://www.youtube.com/watch?v=8uHmXEKltHo")#, required=True, help="Youtube url")
+ap.add_argument("-u", "--url", default="https://www.youtube.com/watch?v=6DK0yrF_ffU")#, required=True, help="Youtube url")
 ap.add_argument("-d", "--detector", default="face_detection_model",#, required=True,
         help="path to OpenCV's deep learning face detector")
 ap.add_argument("-m", "--embedding-model", default="openface_nn4.small2.v1.t7",#, required=True,
