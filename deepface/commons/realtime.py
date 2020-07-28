@@ -129,7 +129,7 @@ def analysis(out, db_path, model_name, distance_metric, cap=None, enable_face_an
 	
 	#-----------------------
 
-	time_threshold = 0; frame_threshold = 0
+	time_threshold = 1; frame_threshold = 5
 	pivot_img_size = 112 #face recognition result image
 
 	#-----------------------
