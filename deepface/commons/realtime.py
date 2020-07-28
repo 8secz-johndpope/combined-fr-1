@@ -5,6 +5,7 @@ import pandas as pd
 import cv2
 import time
 import re
+import pickle
 
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
@@ -13,7 +14,7 @@ from deepface.basemodels import VGGFace, OpenFace, Facenet, FbDeepFace, DeepID
 from deepface.extendedmodels import Age, Gender, Race, Emotion
 from deepface.commons import functions, realtime, distance as dst
 
-def analysis(out, db_path, model_name, distance_metric, cap=None, enable_face_analysis = True):
+def analysis(out, db_path, model_name, distance_metric, cap=None, enable_face_analysis = True, embd_saved=False):
 	
 	input_shape = (224, 224)
 	text_color = (255,255,255)
@@ -96,18 +97,28 @@ def analysis(out, db_path, model_name, distance_metric, cap=None, enable_face_an
 	
 	pbar = tqdm(range(0, len(employees)), desc='Finding embeddings')
 	
-	embeddings = []
-	#for employee in employees:
-	for index in pbar:
-		employee = employees[index]
-		pbar.set_description("Finding embedding for %s" % (employee.split("/")[-1]))
-		embedding = []
-		img = functions.detectFace(employee, (input_shape_y, input_shape_x))
-		img_representation = model.predict(img)[0,:]
-		
-		embedding.append(employee)
-		embedding.append(img_representation)
-		embeddings.append(embedding)
+	if not embd_saved:
+		embeddings = []
+		#for employee in employees:
+		for index in pbar:
+			employee = employees[index]
+			pbar.set_description("Finding embedding for %s" % (employee.split("/")[-1]))
+			embedding = []
+			try:
+				img = functions.detectFace(employee, (input_shape_y, input_shape_x))
+			except:
+				print(employee)
+				continue
+			img_representation = model.predict(img)[0,:]
+			
+			embedding.append(employee)
+			embedding.append(img_representation)
+			embeddings.append(embedding)
+		with open(f"deepface_{model_name}.pkl", 'wb') as f:
+			pickle.dump(embeddings, f)
+	else:
+		with open(f"deepface_{model_name}.pkl", 'rb') as f:
+			embeddings = pickle.load(f)
 	
 	df = pd.DataFrame(embeddings, columns = ['employee', 'embedding'])
 	df['distance_metric'] = distance_metric
@@ -118,7 +129,7 @@ def analysis(out, db_path, model_name, distance_metric, cap=None, enable_face_an
 	
 	#-----------------------
 
-	time_threshold = 5; frame_threshold = 5
+	time_threshold = 0; frame_threshold = 0
 	pivot_img_size = 112 #face recognition result image
 
 	#-----------------------
@@ -460,7 +471,7 @@ def analysis(out, db_path, model_name, distance_metric, cap=None, enable_face_an
 				cv2.putText(freeze_img, str(time_left), (40, 40), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 1)
 				
 				# cv2.imshow('img', freeze_img)
-				# out.write(freeze_img)
+				out.write(freeze_img)
 				
 				freezed_frame = freezed_frame + 1
 			else:

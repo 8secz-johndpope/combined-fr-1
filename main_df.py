@@ -38,4 +38,5 @@ out = cv2.VideoWriter("output/deepface.avi",cv2.VideoWriter_fourcc('M','J','P','
 
 
 models = ["VGG-Face", "Facenet", "OpenFace", "DeepFace", "DeepID"]
-realtime.analysis(cap=cap, out=out, db_path="tmp", model_name=models[1], distance_metric = 'cosine', enable_face_analysis = False)
+realtime.analysis(cap=cap, out=out, db_path="friends", model_name=models[1], distance_metric='cosine',
+enable_face_analysis = False, embd_saved=False)
