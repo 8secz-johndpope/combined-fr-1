@@ -1,5 +1,9 @@
 import logging
 import os
+
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"  # FATAL
+logging.getLogger("tensorflow").setLevel(logging.FATAL)
+import os
 import sys
 sys.path.append('/root/')
 import torch
@@ -24,9 +28,25 @@ import youtube_dl
 from sphereface.dataset import ImageDataset
 from cp2tform import get_similarity_transform_for_cv2
 import sphereface.net_sphere as net_sphere
+import tensorflow as tf
 
-# import DeepFace
-# from deepface.basemodels import OpenFace, Facenet, FbDeepFace
+import tqdm
+
+
+class _TQDM(tqdm.tqdm):
+    def __init__(self, *argv, **kwargs):
+        kwargs["disable"] = True
+        if kwargs.get("disable_override", "def") != "def":
+            kwargs["disable"] = kwargs["disable_override"]
+        super().__init__(*argv, **kwargs)
+
+
+tqdm.tqdm = _TQDM
+
+import DeepFace
+from deepface.basemodels import OpenFace, Facenet, FbDeepFace
+from deepface import DeepFace
+DeepFace.stream("C:/User/Sefik/Desktop/database")
 
 from random import shuffle
 #################################
