@@ -129,8 +129,10 @@ def analysis(out, db_path, model_name, distance_metric, cap=None, enable_face_an
 	
 	#-----------------------
 
-	time_threshold = 1; frame_threshold = 5
+	time_threshold = 0.1; frame_threshold = 1
 	pivot_img_size = 112 #face recognition result image
+	# no_freeze = False
+	# blur_threshold = 1
 
 	#-----------------------
 	
@@ -195,13 +197,14 @@ def analysis(out, db_path, model_name, distance_metric, cap=None, enable_face_an
 				#-------------------------------------
 				
 		if face_detected == True and face_included_frames == frame_threshold and freeze == False:
-			freeze = True
+			freeze = True #if not no_freeze else False
 			#base_img = img.copy()
 			base_img = raw_img.copy()
 			detected_faces_final = detected_faces.copy()
 			tic = time.time()
 		
-		if freeze == True:
+		if freeze==True:
+		# if face_detected and (freeze == True or no_freeze):
 
 			toc = time.time()
 			if (toc - tic) < time_threshold:
@@ -362,8 +365,11 @@ def analysis(out, db_path, model_name, distance_metric, cap=None, enable_face_an
 						
 						custom_face = functions.detectFace(custom_face, (input_shape_y, input_shape_x))
 						
+						# gray = cv2.cvtColor(custom_face.squeeze().astype(np.uint8), cv2.COLOR_BGR2GRAY)
+						# fm = cv2.Laplacian(gray, cv2.CV_64F).var()
 						#check detectFace function handled
 						if custom_face.shape[1:3] == input_shape:
+						# if custom_face.shape[1:3] == input_shape and fm > blur_threshold:
 							if df.shape[0] > 0: #if there are images to verify, apply face recognition
 								img1_representation = model.predict(custom_face)[0,:]
 								
