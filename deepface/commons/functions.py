@@ -286,7 +286,7 @@ def detectFace(img, target_size=(224, 224), grayscale = False, enforce_detection
 				img = np.array(img.rotate(direction * angle))
 				
 				#you recover the base image and face detection disappeared. apply again.
-				faces = face_detector.detectMultiScale(img, 1.3, 5)
+				faces = face_detector.detectMultiScale(img, 1.3, 5, minSize=(30,30))
 				if len(faces) > 0:
 					x,y,w,h = faces[0]
 					detected_face = img[int(y):int(y+h), int(x):int(x+w)]
