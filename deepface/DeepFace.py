@@ -103,7 +103,6 @@ def verify(img1_path, img2_path=''
 					else:
 						input_shape = input_shape[1:3]
 					
-					
 					img1 = functions.detectFace(img1_path, input_shape, enforce_detection = enforce_detection)
 					img2 = functions.detectFace(img2_path, input_shape, enforce_detection = enforce_detection)
 					
