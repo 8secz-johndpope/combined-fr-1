@@ -6,16 +6,25 @@ import random
 import os, shutil
 import pandas as pd
 
-f_list = glob("nested2/*/*")
-d = defaultdict(list)
+# f_list = glob("nested2/*/*")
+# d = defaultdict(list)
 
+# for f in f_list:
+#     d[f.split('/')[1].split('_')[0].lower()].append(f)
+
+f_list = glob("flex_milpitas/*")
+d = defaultdict(list)
 for f in f_list:
     d[f.split('/')[1].split('_')[0].lower()].append(f)
+# for i, (k, v) in enumerate(d.items()):
+#     shutil.copyfile(v[0], f"unique/{i}.jpg")
+for i, (k, v) in enumerate(d.items()):
+    if len(v) > 1:
+        os.mkdir(f"nested/{k}")
+        shutil.copyfile(v[0], f"nested/{k}/0.jpg")
+        shutil.copyfile(v[1], f"nested/{k}/1.jpg")
+exit()
 
-print(len(f_list))
-
-tot = 0
-f_p = 0
 
 # det = 0
 # random.shuffle(f_list)
